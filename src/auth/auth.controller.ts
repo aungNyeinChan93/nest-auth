@@ -23,4 +23,11 @@ export class AuthController {
         return this.authService.login(loginDto)
     }
 
+    @Post('test-accessToken')
+    @HttpCode.apply(HttpStatus.OK)
+    async testAccessToken(@Body('token') token: string) {
+        return this.authService.verifyAccessToken(token)
+    }
+
+
 }

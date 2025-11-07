@@ -69,7 +69,7 @@ export class AuthService {
             role: user?.role
         };
         return this.jwtService.sign(accessTokenPayload, {
-            secret: 'access_token',
+            secret: 'access_secret',
             expiresIn: '30m'
         })
     }
@@ -79,8 +79,17 @@ export class AuthService {
             sub: user?.id,
         };
         return this.jwtService.sign(refreshTokenPayload, {
-            secret: 'access_token',
-            expiresIn: '30m'
+            secret: 'refresh_secret',
+            expiresIn: '7d'
         })
+    }
+
+    async verifyAccessToken(token: string) {
+        const accessTokenPayload: AccessTokenPayload = await this.jwtService.verify(token, {
+            secret: 'access_secret'
+        });
+        const user = await this.userRepo.findOne({ where: { email: accessTokenPayload?.email } })
+        if (!user) throw new NotFoundException('User not found!')
+        return user;
     }
 }
