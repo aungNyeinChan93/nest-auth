@@ -18,12 +18,11 @@ export class UsersService {
   }
 
   async findAll() {
-
     return await this.userRepo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    return await this.userRepo?.findOne({ where: { id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

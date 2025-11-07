@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prettier/prettier */
 
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException, Scope, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { User, UserRole } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt'
@@ -10,7 +11,8 @@ import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AccessTokenPayload } from './interfaces/auth.interfaces';
 
-@Injectable()
+
+@Injectable({ scope: Scope.DEFAULT })
 export class AuthService {
     constructor(
         @InjectRepository(User) private userRepo: Repository<User>,
@@ -92,4 +94,21 @@ export class AuthService {
         if (!user) throw new NotFoundException('User not found!')
         return user;
     }
+
+    async verifyRefreshToken(token: string) {
+        const refreshPayload: Partial<AccessTokenPayload> = await this.jwtService.verify(token, {
+            secret: 'refresh_secret'
+        })
+        if (!refreshPayload) throw new NotFoundException('refresh token is in valid!')
+        const user = await this.userRepo.findOne({ where: { id: refreshPayload?.sub } })
+        return user;
+    }
+
+    async createAdmin(registerDto: RegisterDto): Promise<User> {
+        const user = this.userRepo.create({ ...registerDto, created_at: new Date(), role: UserRole?.ADMIN })
+        return await this.userRepo.save(user);
+    }
+
+
+
 }

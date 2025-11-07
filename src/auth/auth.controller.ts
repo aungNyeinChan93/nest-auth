@@ -1,10 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable prettier/prettier */
 
 
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { UserRole } from 'src/users/entities/user.entity';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { Roles } from './decorators/role.decorator';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RolesGuard } from './guard/roles.gurad';
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +34,28 @@ export class AuthController {
     async testAccessToken(@Body('token') token: string) {
         return this.authService.verifyAccessToken(token)
     }
+
+    @Post('test-refreshToken')
+    @HttpCode(HttpStatus.OK)
+    async testRefreshToken(@Body('token') token: string) {
+        return this.authService.verifyRefreshToken(token)
+    }
+
+    // protected route
+    @Get('profile')
+    @UseGuards(JwtAuthGuard)
+    getProfile(@CurrentUser() user: any) {
+        return user;
+    }
+
+    // admin && protected
+    @Post('create-admin')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRole.ADMIN)
+    createAdmin(@Body() registerDto: RegisterDto) {
+        return this.authService.createAdmin(registerDto)
+    }
+
 
 
 }
