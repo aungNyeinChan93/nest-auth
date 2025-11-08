@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
+import { PostsModule } from './posts/posts.module';
+import { Post } from './posts/entities/post.entity';
 
 
 @Module({
@@ -21,12 +23,13 @@ import { ConfigModule } from '@nestjs/config';
       ssl: {
         rejectUnauthorized: true, // required for Neon
       },
-      entities: [User],
+      entities: [User, Post],
       synchronize: true,
-      // autoLoadEntities: true,
+      autoLoadEntities: true,
     }),
     UsersModule,
     AuthModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

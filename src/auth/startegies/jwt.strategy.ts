@@ -24,11 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate(payload: AccessTokenPayload): Promise<User> {
+    async validate(payload: AccessTokenPayload): Promise<Omit<User, 'password'>> {
         try {
             const user = await this.userService.findOne(payload?.sub)
             if (!user) throw new NotFoundException('user is not found')
-            return user
+            return user;
 
         } catch (error) {
             console.error(error)

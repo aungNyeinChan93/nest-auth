@@ -92,7 +92,8 @@ export class AuthService {
         });
         const user = await this.userRepo.findOne({ where: { email: accessTokenPayload?.email } })
         if (!user) throw new NotFoundException('User not found!')
-        return user;
+        const { password, ...result } = user;
+        return { user: result, password }
     }
 
     async verifyRefreshToken(token: string) {
@@ -101,14 +102,14 @@ export class AuthService {
         })
         if (!refreshPayload) throw new NotFoundException('refresh token is in valid!')
         const user = await this.userRepo.findOne({ where: { id: refreshPayload?.sub } })
-        return user;
+        if (!user) throw new NotFoundException('User not found!')
+        const { password, ...result } = user;
+        return { user: result, password }
     }
 
     async createAdmin(registerDto: RegisterDto): Promise<User> {
         const user = this.userRepo.create({ ...registerDto, created_at: new Date(), role: UserRole?.ADMIN })
         return await this.userRepo.save(user);
     }
-
-
 
 }

@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Post } from "src/posts/entities/post.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -28,6 +29,9 @@ export class User {
         default: UserRole.GUEST
     })
     role: UserRole
+
+    @OneToMany(() => Post, (post) => post?.author)
+    posts: Post[]
 
     @CreateDateColumn()
     created_at: Date;

@@ -11,10 +11,11 @@ import { JwtStrategy } from './startegies/jwt.strategy';
 import { RolesGuard } from './guard/roles.gurad';
 // import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, RolesGuard],
+  providers: [AuthService, JwtStrategy, RolesGuard, JwtAuthGuard],
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register({ global: true }),

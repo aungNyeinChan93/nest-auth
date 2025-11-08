@@ -42,20 +42,18 @@ export class AuthController {
     }
 
     // protected route
-    @Get('profile')
     @UseGuards(JwtAuthGuard)
+    @Get('profile')
     getProfile(@CurrentUser() user: any) {
         return user;
     }
 
     // admin && protected
-    @Post('create-admin')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRole.ADMIN)
+    @Post('create-admin')
     createAdmin(@Body() registerDto: RegisterDto) {
         return this.authService.createAdmin(registerDto)
     }
-
-
 
 }
