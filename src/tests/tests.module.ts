@@ -6,10 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TestGuard } from './guard/testguard';
 import { TestRolesGuard } from './guard/test-roles.guard';
+import { UserTypeGuard } from './guard/user-type.guard';
 
 @Module({
   controllers: [TestsController],
-  providers: [TestsService, TestGuard, TestRolesGuard],
+  providers: [TestsService, TestGuard, TestRolesGuard, UserTypeGuard],
   imports: [
     JwtModule.register({}),
     PassportModule,

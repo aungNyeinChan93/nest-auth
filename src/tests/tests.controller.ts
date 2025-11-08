@@ -10,6 +10,8 @@ import { TestGuard } from './guard/testguard';
 import { TestRolesGuard } from './guard/test-roles.guard';
 import { TestRoles } from './decorators/test-roles.decorator';
 import { UserRole } from 'src/users/entities/user.entity';
+import { UserTypeGuard } from './guard/user-type.guard';
+import { UserT } from './decorators/user-type';
 
 @Controller('tests')
 export class TestsController {
@@ -53,4 +55,13 @@ export class TestsController {
   testThree() {
     return 'this is only for guest user'
   }
+
+  @UseGuards(UserTypeGuard)
+  @Get('test-four')
+  @UserT('diamond')
+  testFour() {
+    return 'test - four'
+  }
+
+
 }
