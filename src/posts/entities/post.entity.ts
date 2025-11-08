@@ -17,7 +17,7 @@ export class Post {
 
 
     @ManyToOne(() => User, (user) => user?.posts)
-    author: string;
+    author: User;
 
 
     @CreateDateColumn()

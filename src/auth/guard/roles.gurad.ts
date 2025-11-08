@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 
 
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";

@@ -7,7 +7,6 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class PostsService {
@@ -23,7 +22,9 @@ export class PostsService {
   }
 
   async findAll(): Promise<Post[]> {
-    return await this.postRepo.find();
+    return await this.postRepo.find({
+      relations: ['author']
+    });
   }
 
   async findOne(id: number): Promise<Post> {
