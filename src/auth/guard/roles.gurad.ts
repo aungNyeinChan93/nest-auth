@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
             return hasRequiredRole;
         } catch (error) {
             console.error(error)
-            throw new Error("Method not implemented.");
+            throw new Error(error instanceof Error ? error?.message : 'server error');
 
         }
     }

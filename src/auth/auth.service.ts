@@ -15,7 +15,7 @@ import { AccessTokenPayload } from './interfaces/auth.interfaces';
 @Injectable({ scope: Scope.DEFAULT })
 export class AuthService {
     constructor(
-        @InjectRepository(User) private userRepo: Repository<User>,
+        @InjectRepository(User) private userRepo: Repository<User>,  // you can note User entity like as a user table
         private jwtService: JwtService,
     ) { }
 
@@ -72,7 +72,8 @@ export class AuthService {
         };
         return this.jwtService.sign(accessTokenPayload, {
             secret: 'access_secret',
-            expiresIn: '30m'
+            expiresIn: '1d'
+            // expiresIn: '30m'
         })
     }
 

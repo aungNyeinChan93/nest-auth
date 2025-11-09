@@ -11,6 +11,10 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/entities/post.entity';
 import { TestsModule } from './tests/tests.module';
+import { ProductsModule } from './products/products.module';
+import { CategoriesModule } from './categories/categories.module';
+import { Category } from './categories/entities/category.entity';
+import { Product } from './products/entities/product.entity';
 
 
 @Module({
@@ -24,7 +28,7 @@ import { TestsModule } from './tests/tests.module';
       ssl: {
         rejectUnauthorized: true, // required for Neon
       },
-      entities: [User, Post],
+      entities: [User, Post, Category, Product],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -32,6 +36,8 @@ import { TestsModule } from './tests/tests.module';
     AuthModule,
     PostsModule,
     TestsModule,
+    ProductsModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

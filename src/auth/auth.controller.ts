@@ -6,7 +6,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@n
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { UserRole } from 'src/users/entities/user.entity';
+import { User, UserRole } from 'src/users/entities/user.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Roles } from './decorators/role.decorator';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
@@ -44,7 +44,7 @@ export class AuthController {
     // protected route
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    getProfile(@CurrentUser() user: any) {
+    getProfile(@CurrentUser() user: User) {
         return user;
     }
 

@@ -22,6 +22,6 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
     PassportModule,
     UsersModule
   ],
-  exports: [AuthService, RolesGuard]
+  exports: [AuthService, RolesGuard, JwtAuthGuard]
 })
 export class AuthModule { }
