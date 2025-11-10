@@ -6,12 +6,11 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Pagination } from 'src/common/interfaces/pagination.interface';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
-import { waitForDebugger } from 'inspector';
 
 @Injectable()
 export class PostsService {
@@ -27,21 +26,33 @@ export class PostsService {
     return newPost;
   }
 
-  async findAll(paginationDto: PaginationDto): Promise<Pagination<Post>> {
+  async findAll(paginationDto: PaginationDto & Partial<{ title: string | undefined }>): Promise<Pagination<Post>> {
+
     const currentPage = Number(paginationDto?.page) || 1;
     const limit = Number(paginationDto?.limit) || 10;
     const skip = (currentPage - 1) * limit;
 
-    const cachePosts = await this.cacheManager.get<Post[]>('posts');
+    const cacheKey = `posts:page=${currentPage}:limit=${limit}:title=${(paginationDto?.title ?? '')}`;  //cache key by URI
+
+    const cachePosts = await this.cacheManager.get<Post[]>(cacheKey);
 
     if (!cachePosts) {
+      const where = paginationDto?.title && paginationDto?.title.trim() !== ''
+        ? { title: ILike(`%${paginationDto?.title?.trim()}%`) }
+        : undefined;
+
       const [posts, totalPosts] = await this.postRepo.findAndCount({
+        where,
         relations: { author: true },
         take: limit,
-        skip
+        skip,
+        order: { created_at: 'DESC' }
       });
-      await this.cacheManager.set<Post[]>('posts', posts)
+
       const totalPage = Math.ceil(totalPosts == 0 ? 1 : totalPosts / limit);
+
+      await this.cacheManager.set<Post[]>(cacheKey, posts)
+
       return this.generatePaginationResult<Post>({ currentPage, totalPage, limit, totalItems: totalPosts, items: posts });
     }
 

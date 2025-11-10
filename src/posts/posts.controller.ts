@@ -22,7 +22,7 @@ export class PostsController {
 
 
   @Get()
-  findAll(@Query() paginationDto: PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto & Partial<{ title: string | undefined }>) {
     return this.postsService.findAll(paginationDto);
   }
 
