@@ -20,16 +20,13 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
-
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() paginationDto: PaginationDto & Partial<{ title: string | undefined }>) {
     return this.postsService.findAll(paginationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
-  }
+
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
@@ -47,5 +44,16 @@ export class PostsController {
   @Post('current-user')
   currentUser(@CurrentUser() user: User) {
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('my-posts')
+  myPosts(@CurrentUser() user: User, @Query() paginationDto: PaginationDto) {
+    return this.postsService.myPosts(user, paginationDto)
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.postsService.findOne(+id);
   }
 }

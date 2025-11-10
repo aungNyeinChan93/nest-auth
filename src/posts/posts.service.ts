@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 
+// import { * as bcrypt } from 'bcrypt';
 import { ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -88,5 +89,45 @@ export class PostsService {
 
   private generatePaginationResult<T>(result: Pagination<T>) {
     return { ...result }
+  }
+
+  async myPosts(user: User, paginationDto: PaginationDto): Promise<Pagination<Post>> {
+    const currentPage = Number(paginationDto?.page) || 1;
+    const limit = Number(paginationDto?.limit) || 10;
+    const skip = (currentPage - 1) * limit;
+
+    const cacheKey = `user_id - ${user?.id}`;
+
+    const cachePosts = await this.cacheManager.get<{ posts: Post[], count: number }>(cacheKey);
+
+    if (!cachePosts) {
+      const [posts, totalPosts] = await this.postRepo.findAndCount({
+        where: { author: { id: user?.id } },
+        order: { created_at: 'DESC' },
+        relations: { author: true },
+        take: limit,
+        skip
+      });
+      const totalPage = Math.max(1, Math.ceil(totalPosts / limit));
+
+      await this.cacheManager.set<{ posts: Post[], count: number }>(cacheKey, { posts: posts, count: totalPosts });
+
+      return this.generatePaginationResult<Post>({
+        currentPage, limit, totalPage, totalItems: totalPosts, items: posts
+      });
+    }
+
+    const totalPosts = cachePosts?.count;
+    const totalPage = Math.max(1, Math.ceil(totalPosts / limit));
+
+    console.log('cache');
+
+    return this.generatePaginationResult({
+      currentPage,
+      limit,
+      totalItems: totalPosts,
+      totalPage,
+      items: cachePosts?.posts
+    })
   }
 }
