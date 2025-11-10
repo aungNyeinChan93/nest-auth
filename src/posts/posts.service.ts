@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class PostsService {
@@ -22,10 +23,20 @@ export class PostsService {
     return newPost;
   }
 
-  async findAll(): Promise<Post[]> {
-    return await this.postRepo.find({
-      relations: ['author']
+  async findAll(paginationDto: PaginationDto) {
+    const page = Number(paginationDto?.page);
+    const limit = Number(paginationDto?.limit);
+    const skip = (page - 1) * limit;
+
+    const [posts, totalPosts] = await this.postRepo.findAndCount({
+      relations: { author: true },
+      take: limit,
+      skip
     });
+    const totalPage = Math.ceil(totalPosts == 0 ? 1 : totalPosts / limit);
+    return {
+      totalPosts, page, limit, totalPage, posts
+    }
   }
 
   async findOne(id: number): Promise<Post> {
