@@ -72,7 +72,7 @@ export class AuthService {
         };
         return this.jwtService.sign(accessTokenPayload, {
             secret: 'access_secret',
-            expiresIn: '1d'
+            expiresIn: '365d'
             // expiresIn: '30m'
         })
     }
