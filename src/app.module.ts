@@ -17,6 +17,7 @@ import { Category } from './categories/entities/category.entity';
 import { Product } from './products/entities/product.entity';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
 
 
 @Module({
@@ -40,6 +41,11 @@ import { APP_GUARD } from '@nestjs/core';
         { name: 'login', ttl: 60000, limit: 5 }
       ]
     }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 1000 * 60,
+    })
+    ,
     UsersModule,
     AuthModule,
     PostsModule,

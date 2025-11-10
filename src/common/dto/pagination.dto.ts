@@ -7,9 +7,9 @@ export class PaginationDto {
 
     @IsOptional()
     @IsNumberString()
-    page?: number;
+    page?: number | string;
 
     @IsOptional()
     @IsNumberString()
-    limit?: number;
+    limit?: number | string;
 }
