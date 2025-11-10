@@ -15,6 +15,8 @@ import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/entities/category.entity';
 import { Product } from './products/entities/product.entity';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -32,6 +34,12 @@ import { Product } from './products/entities/product.entity';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    ThrottlerModule.forRoot({ // global rate limt 10 req for 1min
+      throttlers: [
+        { name: 'default', ttl: 60000, limit: 10 },
+        { name: 'login', ttl: 60000, limit: 5 }
+      ]
+    }),
     UsersModule,
     AuthModule,
     PostsModule,
@@ -40,7 +48,13 @@ import { Product } from './products/entities/product.entity';
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard
+    }
+  ],
 })
 export class AppModule { }
 

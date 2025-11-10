@@ -11,6 +11,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { Roles } from './decorators/role.decorator';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { RolesGuard } from './guard/roles.gurad';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -23,7 +24,9 @@ export class AuthController {
         return this.authService.register(registerDto)
     }
 
+
     @Post('login')
+    @Throttle({ login: { ttl: 1000 * 60, limit: 5 } })
     @HttpCode(HttpStatus.CREATED)
     async login(@Body() loginDto: LoginDto) {
         return this.authService.login(loginDto)
