@@ -24,6 +24,7 @@ export class PostsService {
     const post = this.postRepo.create({ ...createPostDto, created_at: new Date(), author: user });
     if (!post) throw new ConflictException('Post create fail!')
     const newPost = await this.postRepo.save(post);
+    await this.cacheManager.clear();
     return newPost;
   }
 
@@ -64,11 +65,22 @@ export class PostsService {
   }
 
   async findOne(id: number): Promise<Post> {
+    const cacheKey = `post-${id}`;
+    const cachePost = await this.cacheManager.get<Post>(cacheKey);
+
+    if (cachePost) {
+      console.log(cacheKey);
+      return cachePost;
+    };
+
     const post = await this.postRepo.findOne({
       where: { id },
       relations: ['author']
     })
+
     if (!post) throw new NotFoundException("Post Not found!")
+
+    await this.cacheManager.set<Post>(cacheKey, post)
     return post;
   }
 
@@ -76,7 +88,8 @@ export class PostsService {
     const updatePost = await this.findOne(id);
     if (updatePost?.author?.id !== user?.id) throw new UnauthorizedException('This post can not be update')
     const result = await this.postRepo.update(id, updatePostDto)
-    if (result?.affected === 0) throw new ConflictException('Post Update fail')
+    if (result?.affected === 0) throw new ConflictException('Post Update fail');
+    await this.cacheManager.clear();
     return this.findOne(id);
   }
 
@@ -84,6 +97,7 @@ export class PostsService {
     const post = await this.findOne(id);
     if (post?.author?.id !== user?.id) throw new UnauthorizedException('You can not unauthorized! ')
     await this.postRepo.remove(post);
+    await this.cacheManager.clear();
     return { message: `Post was successfully delete!` }
   }
 
