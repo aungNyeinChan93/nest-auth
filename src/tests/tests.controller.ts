@@ -12,14 +12,15 @@ import { TestRoles } from './decorators/test-roles.decorator';
 import { UserRole } from 'src/users/entities/user.entity';
 import { UserTypeGuard } from './guard/user-type.guard';
 import { UserT } from './decorators/user-type';
+import { type UserInterface } from './interfaces/user.interface';
 
 @Controller('tests')
 export class TestsController {
   constructor(private readonly testsService: TestsService) { }
 
   @Post()
-  create(@Body() createTestDto: CreateTestDto) {
-    return this.testsService.create(createTestDto);
+  create(@Body() user: UserInterface) {
+    return this.testsService.create(user);
   }
 
   @Get()

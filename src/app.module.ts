@@ -18,6 +18,8 @@ import { Product } from './products/entities/product.entity';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UploadImageModule } from './upload-image/upload-image.module';
+import { DrizzleModule } from './drizzle/drizzle.module';
 
 
 @Module({
@@ -52,6 +54,8 @@ import { CacheModule } from '@nestjs/cache-manager';
     TestsModule,
     ProductsModule,
     CategoriesModule,
+    UploadImageModule,
+    DrizzleModule,
   ],
   controllers: [AppController],
   providers: [

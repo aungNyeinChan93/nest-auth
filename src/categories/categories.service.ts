@@ -6,7 +6,6 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CategoriesService {

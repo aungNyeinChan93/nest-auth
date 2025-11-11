@@ -9,11 +9,14 @@ import { Post } from './entities/post.entity';
 
 @Module({
   controllers: [PostsController],
-  providers: [PostsService],
-  exports: [PostsService],
+  providers: [
+    PostsService,
+  ],
   imports: [
     TypeOrmModule.forFeature([Post]),
-    // PassportModule.register({})
-  ]
+    // PassportModule.register({}),
+
+  ],
+  exports: [PostsService],
 })
 export class PostsModule { }

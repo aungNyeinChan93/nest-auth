@@ -1,15 +1,30 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import * as schema from '../drizzle/db/schema';
+import { UserInterface } from './interfaces/user.interface';
+
 
 @Injectable()
 export class TestsService {
-  create(createTestDto: CreateTestDto) {
-    return 'This action adds a new test';
+  constructor(
+    @Inject('DRIZZLE') private db: NodePgDatabase<typeof schema>,
+  ) { }
+
+  async create(user: UserInterface) {
+    const result = await this.db.insert(schema?.usersTable)
+      .values(user)
+      .returning();
+    if (!user) throw new NotFoundException('user create fail')
+    return result;
   }
 
-  findAll() {
-    return `This action returns all tests`;
+  async findAll() {
+    const users = await this.db.query.usersTable.findMany();
+    return users;
   }
 
   findOne(id: number) {

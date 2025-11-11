@@ -7,6 +7,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TestGuard } from './guard/testguard';
 import { TestRolesGuard } from './guard/test-roles.guard';
 import { UserTypeGuard } from './guard/user-type.guard';
+import { DrizzleModule } from 'src/drizzle/drizzle.module';
 
 @Module({
   controllers: [TestsController],
@@ -14,6 +15,7 @@ import { UserTypeGuard } from './guard/user-type.guard';
   imports: [
     JwtModule.register({}),
     PassportModule,
+    DrizzleModule
   ]
 })
 export class TestsModule { }
