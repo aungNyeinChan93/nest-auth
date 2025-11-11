@@ -20,13 +20,16 @@ import { APP_GUARD } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UploadImageModule } from './upload-image/upload-image.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
-
+import { HttpModule } from '@nestjs/axios'
+import { RecipesModule } from './recipes/recipes.module';
 
 @Module({
   imports: [
+
     ConfigModule.forRoot({
       envFilePath: ['.env']
     }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL!,
@@ -37,17 +40,19 @@ import { DrizzleModule } from './drizzle/drizzle.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
+
     ThrottlerModule.forRoot({ // global rate limt 10 req for 1min
       throttlers: [
         { name: 'default', ttl: 60000, limit: 10 },
         { name: 'login', ttl: 60000, limit: 5 }
       ]
     }),
+
     CacheModule.register({
       isGlobal: true,
       ttl: 1000 * 60,
-    })
-    ,
+    }),
+
     UsersModule,
     AuthModule,
     PostsModule,
@@ -56,14 +61,25 @@ import { DrizzleModule } from './drizzle/drizzle.module';
     CategoriesModule,
     UploadImageModule,
     DrizzleModule,
+    RecipesModule,
+
+    HttpModule.register({
+      timeout: 5000,
+      allowAbsoluteUrls: true,
+    })
+
   ],
+
   controllers: [AppController],
+
   providers: [
     AppService,
+
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
     }
+
   ],
 })
 export class AppModule { }

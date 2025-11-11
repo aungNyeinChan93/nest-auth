@@ -9,7 +9,10 @@ import { diskStorage } from 'multer';
 
 @Controller('upload-image')
 export class UploadImageController {
-  constructor(private readonly uploadImageService: UploadImageService) { }
+  constructor(
+    private readonly uploadImageService: UploadImageService,
+
+  ) { }
 
   @Post()
   create(@Body() createUploadImageDto: CreateUploadImageDto) {
