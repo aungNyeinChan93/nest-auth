@@ -8,9 +8,9 @@ import { User } from "src/users/entities/user.entity";
 @Injectable()
 export class UserRegisterListener {
 
-    @OnEvent('user.created')
-    userCreate(payload: User) {
+    @OnEvent('user.register')
+    userCreate(payload: Pick<User, 'email'>) {
         // TODO - welcome email send to user!
-        console.log(payload?.name)
+        console.log(payload?.email);
     }
 }

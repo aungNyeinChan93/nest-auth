@@ -12,6 +12,7 @@ import { RolesGuard } from './guard/roles.gurad';
 // import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
   controllers: [AuthController],
@@ -20,7 +21,8 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({ global: true }),
     PassportModule,
-    UsersModule
+    UsersModule,
+    EventsModule,
   ],
   exports: [AuthService, RolesGuard, JwtAuthGuard]
 })
