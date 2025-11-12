@@ -24,6 +24,7 @@ import { HttpModule } from '@nestjs/axios'
 import { RecipesModule } from './recipes/recipes.module';
 import { EventsModule } from './events/events.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UploadImageModule,
     DrizzleModule,
     RecipesModule,
+    MailModule,
 
 
   ],
