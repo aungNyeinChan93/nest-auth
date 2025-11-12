@@ -2,7 +2,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { Resend } from 'resend'
-import { WelcomeEmailInterface } from './interfaces/welcome-mail.interface';
+import { EmailInterface } from './interfaces/welcome-mail.interface';
 
 @Injectable()
 export class MailService {
@@ -13,7 +13,7 @@ export class MailService {
     };
 
     // general email send
-    async sendEmail(ctx: WelcomeEmailInterface) {
+    async sendEmail(ctx: EmailInterface) {
         try {
             const { data, error } = await this.resend.emails.send({
                 from: ctx.from || 'onboarding@resend.dev',

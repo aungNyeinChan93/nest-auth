@@ -9,10 +9,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './startegies/jwt.strategy';
 import { RolesGuard } from './guard/roles.gurad';
-// import { UsersService } from 'src/users/users.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { EventsModule } from 'src/events/events.module';
+// import { UsersService } from 'src/users/users.service';
 
 @Module({
   controllers: [AuthController],

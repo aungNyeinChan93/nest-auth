@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors } from '@nestjs/common';
 import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
@@ -14,6 +14,8 @@ import { UserTypeGuard } from './guard/user-type.guard';
 import { UserT } from './decorators/user-type';
 import { type UserInterface } from './interfaces/user.interface';
 import type { Request } from 'express';
+import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @Controller({ path: 'tests' })
 export class TestsController {
@@ -71,5 +73,11 @@ export class TestsController {
     return request?.params
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('test-six')
+  @UseInterceptors(ResponseInterceptor)
+  testSix() {
+    return 'this is interceptor test'
+  }
 
 }

@@ -15,5 +15,8 @@ export class EventsService {
     }
 
     // user login
+    userLoginEmit(user: Omit<User, 'password'>) {
+        this.eventEmitter.emit('user.login', user)
+    }
 
 }

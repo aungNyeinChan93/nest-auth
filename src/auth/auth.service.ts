@@ -47,6 +47,9 @@ export class AuthService {
 
         const { password, ...result } = user;
 
+        // login emit
+        this.eventService.userLoginEmit(result)
+
         return {
             user: result,
             accessToken,
