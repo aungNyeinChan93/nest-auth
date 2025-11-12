@@ -11,7 +11,9 @@ import { DrizzleModule } from 'src/drizzle/drizzle.module';
 
 @Module({
   controllers: [TestsController],
+
   providers: [TestsService, TestGuard, TestRolesGuard, UserTypeGuard],
+
   imports: [
     JwtModule.register({}),
     PassportModule,

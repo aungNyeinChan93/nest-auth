@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
@@ -13,8 +13,9 @@ import { UserRole } from 'src/users/entities/user.entity';
 import { UserTypeGuard } from './guard/user-type.guard';
 import { UserT } from './decorators/user-type';
 import { type UserInterface } from './interfaces/user.interface';
+import type { Request } from 'express';
 
-@Controller('tests')
+@Controller({ path: 'tests' })
 export class TestsController {
   constructor(private readonly testsService: TestsService) { }
 
@@ -62,6 +63,12 @@ export class TestsController {
   @UserT('diamond')
   testFour() {
     return 'test - four'
+  }
+
+  @Post('test-five/:id')
+  testFive(@Req() request: Request) {
+    console.log(request?.file?.buffer);
+    return request?.params
   }
 
 

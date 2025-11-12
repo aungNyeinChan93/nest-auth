@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 
 
@@ -24,11 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         })
     }
 
-    async validate(payload: AccessTokenPayload): Promise<Omit<User, 'password'>> {
+    async validate(payload: AccessTokenPayload): Promise<Omit<User, 'password'> | string> {
         try {
             const user = await this.userService.findOne(payload?.sub)
-            if (!user) throw new NotFoundException('user is not found')
-            return user;
+            if (!user) throw new NotFoundException('user is not found');
+            const { password, ...result } = user;
+            return result;
 
         } catch (error) {
             console.error(error)

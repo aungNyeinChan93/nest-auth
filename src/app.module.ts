@@ -22,6 +22,8 @@ import { UploadImageModule } from './upload-image/upload-image.module';
 import { DrizzleModule } from './drizzle/drizzle.module';
 import { HttpModule } from '@nestjs/axios'
 import { RecipesModule } from './recipes/recipes.module';
+import { EventsModule } from './events/events.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -36,9 +38,9 @@ import { RecipesModule } from './recipes/recipes.module';
       ssl: {
         rejectUnauthorized: true, // required for Neon
       },
+      autoLoadEntities: true,
       entities: [User, Post, Category, Product],
       synchronize: true,
-      autoLoadEntities: true,
     }),
 
     ThrottlerModule.forRoot({ // global rate limt 10 req for 1min
@@ -53,8 +55,19 @@ import { RecipesModule } from './recipes/recipes.module';
       ttl: 1000 * 60,
     }),
 
-    UsersModule,
+    HttpModule.register({
+      timeout: 5000,
+      allowAbsoluteUrls: true,
+    }),
+
+    EventEmitterModule.forRoot({
+      global: true,
+    }),
+
+
     AuthModule,
+    EventsModule,
+    UsersModule,
     PostsModule,
     TestsModule,
     ProductsModule,
@@ -63,10 +76,6 @@ import { RecipesModule } from './recipes/recipes.module';
     DrizzleModule,
     RecipesModule,
 
-    HttpModule.register({
-      timeout: 5000,
-      allowAbsoluteUrls: true,
-    })
 
   ],
 
