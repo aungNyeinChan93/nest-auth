@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, Query } from '@nestjs/common';
 import { TestsService } from './tests.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
@@ -16,6 +16,9 @@ import { type UserInterface } from './interfaces/user.interface';
 import type { Request } from 'express';
 import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { TestGuard as TestGG } from '../common/guard/test.guard'
+import { RolesGuard } from 'src/auth/guard/roles.gurad';
+import { Roles } from 'src/auth/decorators/role.decorator';
 
 @Controller({ path: 'tests' })
 export class TestsController {
@@ -78,6 +81,12 @@ export class TestsController {
   @UseInterceptors(ResponseInterceptor)
   testSix() {
     return 'this is interceptor test'
+  }
+
+  @UseGuards(JwtAuthGuard, TestGG)
+  @Get('test-seven')
+  testSeven(@Query('test') test: string) {
+    return 'test seven ' + test;
   }
 
 }

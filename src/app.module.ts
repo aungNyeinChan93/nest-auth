@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,6 +25,9 @@ import { RecipesModule } from './recipes/recipes.module';
 import { EventsModule } from './events/events.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MailModule } from './mail/mail.module';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { UsersController } from './users/users.controller';
+import { TestMiddleware } from './common/middlewares/test.middleware';
 
 @Module({
   imports: [
@@ -93,5 +96,13 @@ import { MailModule } from './mail/mail.module';
 
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware)
+      // .forRoutes({ path: '*', method: RequestMethod.ALL })
+      .forRoutes(UsersController)
+  }
+
+}
 

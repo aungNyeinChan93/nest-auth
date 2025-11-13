@@ -11,7 +11,7 @@ import { map, Observable } from "rxjs";
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
 
-    private logger: Logger = new Logger();
+    private logger: Logger = new Logger(ResponseInterceptor.name, { timestamp: true });
 
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
 
